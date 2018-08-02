@@ -1,0 +1,26 @@
+{
+    "name": "mark-vsce",
+    "displayName": "Mark",
+    "description": "Visual Studio Code extension for Mark Notation",
+    "version": "0.8.0",
+    "publisher": "henryluo",
+    "engines": {
+        "vscode": "^1.25.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "mark",
+            "aliases": ["Mark", "Mark Notation", "mark"],
+            "extensions": [".mark",".mrk"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "mark",
+            "scopeName": "source.mark",
+            "path": "./syntaxes/mark.tmLanguage.json"
+        }]
+    }
+}

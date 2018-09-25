@@ -1,0 +1,213 @@
+{template version:'1.0'
+
+	{data-form extend:'FormComponent'
+		{form class:"data-form", id:{this.id}, entity:{this.entity}, module:{this.module}, cols:{this.cols}, onvalidate:{this.onvalidate}
+			//{div class:"buttons-row", style:'position:fixed; top:45px; margin:5px -75px; width:150px; left:50%;'
+			//	{for each:'btn', of:{this.buttons}
+			//		{Button btn:{btn}}
+			//	}
+			//}			
+			{div class:'form-table'
+				{if is:{this.children}
+					{compose}
+				}
+				{else  // should apply to data properties
+					{apply}
+				}
+			}
+		}
+	}
+
+	{field-set
+		{if is:(this.en || this.cn)
+			{div class:"block-title"
+				{Label}
+			}
+		}
+		{div class:((this.class||'') + " list inline-labels")
+			{ul
+				{compose}
+			}
+		}
+	}
+	
+	{function name:'field-control'
+		// todo: there's issue with boolean attributes like 'disabled'
+		{span name:{this.name}, class:('field-control'+ (this.isValid ? '':' invalid'))
+			{let model_value:(this.modelValue())
+				{if is:(this.type === 'select')
+					{if is:(this.options === 'yes_no') // 3-state switch
+						{label class:"label-switch", style:{this.style}
+							{input type:"hidden", model:{this.name}, value:{model_value} }
+							{div class:('checkbox' + (model_value == 1 ? ' on':(model_value == 0  ? ' off':'')))
+								ontouchstart:{this.onyesno} onclick:{this.onyesno}}
+							{sub
+								{if is:(model_value == 1) ' Yes'}
+								{else if:(model_value == 0) ' No'}
+								{else ' Unknown'}
+							}
+						}
+					}  
+					{else // normal dropdown select
+						{select model:{this.name}, disabled:{this.disabled}, value:{opt.value}, // value is important for DOM patching
+							style:{this.style}, class:{this.class}, oninput:{this.oninput}
+							{option value:'' '-'}
+							{for each:'opt', of:(this.context.lookup[this.options || this.name])					
+								{option value:{opt.value}, selected:(this.selected(opt.value)),
+									{opt.label}
+								}
+							}
+						}
+					}
+				}
+				{else if:(this.type === 'radio' || this.type === 'checkbox')
+					{for each:'opt', of:(this.context.lookup[this.options || this.name])				
+						{span class:'pick' style:{this.style}
+							// oninput:{this.oninput} is not supported for checkbox or radio on Android browser
+							// 'model' is used instead of 'name' to avoid name clashing with other input in the page
+							{input type:{this.type} model:{this.name} value:{opt.value} checked:(this.checked(opt.value)) disabled:{this.disabled}
+								onchange:{this.onchange} onclick:{this.onclick}} 
+							{opt.label}
+						} // "\u00a0"  unicode for &nbsp;
+					}
+				}
+				{else if:(this.type === 'tick')
+					{input type:'checkbox' model:{this.name} value:1 checked:(model_value == 1 ? 'checked':undefined)
+						// oninput:{this.oninput} is not supported for checkbox or radio on Android browser
+						disabled:{this.disabled} style:{this.style} onchange:{this.onchange}} 
+					{this.label}
+				}
+				{else if:(this.type === 'textarea')
+					{textarea type:'text', model:{this.name}, class:{this.class}, style:{this.style},
+						disabled:{this.disabled}, oninput:{this.oninput}, onmount:{this.mounted}, onkeyup:{this.autosize}, 
+						ontouchstart:{this.ontouchstart}, ontouchend:{this.ontouchend}
+						(model_value || '')
+					}
+				}
+				{else if:(this.type === 'hidden')
+					{input type:'hidden', model:{this.name}, value:{model_value}}
+				}
+				{else if:(this.type === 'datetime')
+					{input type:'text', model:{this.name}, style:'display:none'}
+					{input type:'text', id:(this.name+'_picker'), onmount:{this.renderDateTime}} // for picker binding				
+				}
+				{else if:(this.type === 'password')
+					{input type:'password', model:{this.name}, value:(model_value || ''), oninput:{this.oninput}, onchange:{this.onchange}}
+				}
+				{else  // text
+					{input type:'text', id:{this.id}, model:{this.name}, value:(model_value || ''), class:{this.class}, style:{this.style}, 
+						disabled:{this.disabled}, oninput:{this.oninput}, onchange:{this.onchange}, ontouchstart:{this.ontouchstart}, ontouchend:{this.ontouchend}}
+				}
+			}
+		}
+	}
+	
+	{function name:'field-control-static'
+		{if is:(this.type === 'select')
+			{if is:(this.options === 'yes_no')
+				{if is:(this.modelValue() == 1) ' Yes'}
+				{else if:(this.modelValue() == 0) ' No'}
+				{else ' Unknown'}
+			}
+			{else // normal select
+				{for each:'opt', of:(this.context.lookup[this.options || this.name])						
+					{if is:(this.selected(opt.value))
+						{opt.label}
+					}
+				}
+			}
+		} 
+		{else if:(this.type === 'radio' || this.type === 'checkbox')
+			{for each:'opt', of:(this.context.lookup[this.options || this.name])					
+				{span class:'pick', style:{this.style}
+					{if is:(this.checked(opt.value))
+						{input type:{this.type}, model:{this.name}, value:{opt.value}, checked:true, disabled:true} 
+						{opt.label}
+					}
+				}
+			}
+		}
+		{else if:(this.type === 'tick')
+			(this.modelValue() == 1 ? ' Yes':' No')
+		}
+		{else
+			(this.modelValue())
+		}
+	}
+
+	{field-box extend:'InputComponent'
+		{li
+			{div class:"item-content item-input"
+				{if is:(this.en || this.label)
+					{div class:"item-inner"
+						{div class:('item-title item-label'+ (this.required ? ' required':''))
+							{Label}
+						}
+						{div class:"item-input-wrap", style:{this.style}
+							{compose}
+						}
+					}
+				}
+				{else
+					{div class:"item-inner", style:{this.style}
+						{compose}
+					}
+				}
+			}
+		}	
+	}
+	
+	{component match:'field-box >> field', extend:'InputComponent', class:'inline'
+		{if is:{this.context.editable}
+			{field-control}
+		}
+		{else
+			{field-control-static}
+		}
+	}
+	
+	{field extend:'InputComponent'
+		{li
+			{div class:"item-content item-input"
+				{div class:"item-inner"
+					{if is:{this.context.editable}
+						{if is:{this.name}
+							{div class:('item-title item-label '+ (this.required ? ' required':''))
+								{Label}
+							}
+							{div class:"item-input-wrap"
+								{field-control}
+							}
+						}
+						{else // is this a valid usecase?
+							{compose}
+						}
+					}
+					{else // static field
+						{div class:'item-title item-label'
+							{Label}
+						}
+						{div class:"item-input-wrap"
+							{field-control-static}
+						}					
+					}
+				}
+			}			
+		}
+	}
+
+	{function name:'Label'
+		{if is:(this.context.setting.lang === 'cn' && this.cn) {this.cn}}
+		{else (this.en || this.label)}
+	}
+	
+	{t {Label}}
+	
+	/*
+	{Button 
+		{button class:'button action', onclick:{'$pg.scope.action('+ (this.btn.action || this.btn) +', event)'}
+			{Label en:{this.btn.en || this.btn.action || this.btn.kind || this.btn} }
+		}
+	}
+	*/
+}

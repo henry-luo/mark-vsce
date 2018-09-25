@@ -68,7 +68,16 @@
 					]
 				}
 			]
-		},		
+		},	
+		"binary": {
+			"patterns": [
+				{
+					"begin": "{\\:",
+					"end": "}",
+					"name": "constant.numeric.mark"
+				}
+			]
+		},			
 		"constant": {
 			"match": "\\b(?:true|false|null|NaN|Infinity)\\b",
 			"name": "constant.language.mark"
@@ -140,17 +149,17 @@
 			]
 		},
 		"identifier": {
-			"name": "support.type.property-name.mark",
+			"name": "support.type.property-name.json",
 			"match": "[a-zA-Z$_]([a-zA-Z0-9$_\\-\\.])*"			
 		},
 		"object-key": {
-			"name": "support.type.property-name.mark",
+			"name": "support.type.property-name.json",
 			"patterns": [
 				{
 					"include": "#identifier"
 				},			
 				{
-					"name": "support.type.property-name.mark",
+					"name": "support.type.property-name.json",
 					"begin": "\"",
 					"beginCaptures": {
 						"0": {
@@ -160,7 +169,7 @@
 					"end": "\"",
 					"endCaptures": {
 						"0": {
-							"name": "punctuation.support.type.property-name.end.mark"
+							"name": "punctuation.support.type.property-name.end.json"
 						}
 					},
 					"patterns": [
@@ -170,7 +179,7 @@
 					]
 				},
 				{
-					"name": "support.type.property-name.mark",
+					"name": "support.type.property-name.json",
 					"begin": "'",
 					"beginCaptures": {
 						"0": {
@@ -191,48 +200,50 @@
 				}
 			]
 		},
-		"json-object": {
-			"name": "meta.structure.dictionary.json5",
+		"object": {
+			"name": "meta.structure.dictionary.mark",
 			"begin": "\\{",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.definition.dictionary.begin.json5"
+					"name": "punctuation.definition.dictionary.begin.mark"
 				}
 			},
 			"end": "\\}",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.definition.dictionary.end.json5"
+					"name": "punctuation.definition.dictionary.end.mark"
 				}
 			},
 			"patterns": [
 				{
+					"comment": "JSON or Mark object key",
 					"include": "#object-key"
 				},
 				{
-					"include": "#comment"
+					"include": "#comments"
 				},
 				{
-					"name": "meta.structure.dictionary.value.json5",
 					"begin": ":",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.dictionary.key-value.json5"
+							"name": "punctuation.separator.dictionary.key-value.mark"
 						}
 					},
-					"end": "(,)|(?=\\})",
+					"end": "(,)|(?=\\})|(?=[a-zA-Z$_])",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.separator.dictionary.pair.json5"
+							"name": "punctuation.separator.dictionary.pair.mark"
 						}
 					},
+					"name": "meta.structure.dictionary.value.mark",
 					"patterns": [
 						{
+							"comment": "JSON or Mark object value",
 							"include": "#value"
 						}
 					]
 				}
-			]			
+			]		
 		},	
 		"value": {
 			"patterns": [
@@ -249,13 +260,16 @@
 					"include": "#number"
 				},
 				{
+					"include": "#binary"
+				},
+				{
 					"include": "#string"
 				},
 				{
 					"include": "#array"
 				},
 				{
-					"include": "#json-object"
+					"include": "#object"
 				}				
 			]
 		}

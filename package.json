@@ -8,13 +8,13 @@
         "vscode": "^1.25.0"
     },
     "categories": [
-        "Programming Languages"
+        "Markup Languages"
     ],
     "contributes": {
         "languages": [{
             "id": "mark",
             "aliases": ["Mark", "Mark Notation", "mark"],
-            "extensions": [".mark",".mrk"],
+            "extensions": [".mark", ".mk", ".mt"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{

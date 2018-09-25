@@ -12,27 +12,23 @@
 			"begin": "\\[",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.definition.array.begin.json"
+					"name": "punctuation.definition.array.begin.mark"
 				}
 			},
 			"end": "\\]",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.definition.array.end.json"
+					"name": "punctuation.definition.array.end.mark"
 				}
 			},
-			"name": "meta.structure.array.json",
+			"name": "meta.structure.array.mark",
 			"patterns": [
 				{
 					"include": "#value"
 				},
 				{
 					"match": ",",
-					"name": "punctuation.separator.array.json"
-				},
-				{
-					"match": "[^\\s\\]]",
-					"name": "invalid.illegal.expected-array-separator.json"
+					"name": "punctuation.separator.array.mark"
 				}
 			]
 		},
@@ -42,148 +38,203 @@
 					"begin": "/\\*\\*(?!/)",
 					"captures": {
 						"0": {
-							"name": "punctuation.definition.comment.json"
+							"name": "punctuation.definition.comment.mark"
 						}
 					},
 					"end": "\\*/",
-					"name": "comment.block.documentation.json"
+					"name": "comment.block.documentation.mark"
 				},
 				{
 					"begin": "/\\*",
 					"captures": {
 						"0": {
-							"name": "punctuation.definition.comment.json"
+							"name": "punctuation.definition.comment.mark"
 						}
 					},
 					"end": "\\*/",
-					"name": "comment.block.json"
+					"name": "comment.block.mark"
 				},
 				{
 					"captures": {
 						"1": {
-							"name": "punctuation.definition.comment.json"
+							"name": "punctuation.definition.comment.mark"
 						}
 					},
 					"match": "(//).*$\\n?",
-					"name": "comment.line.double-slash.js"
+					"name": "comment.line.double-slash.mark"
 				}
 			]
 		},
 		"constant": {
-			"match": "\\b(?:true|false|null)\\b",
-			"name": "constant.language.json"
+			"match": "\\b(?:true|false|null|NaN|Infinity)\\b",
+			"name": "constant.language.mark"
 		},
 		"number": {
 			"match": "(?x)        # turn on extended mode\n  -?        # an optional minus\n  (?:\n    0       # a zero\n    |       # ...or...\n    [1-9]   # a 1-9 character\n    \\d*     # followed by zero or more digits\n  )\n  (?:\n    (?:\n      \\.    # a period\n      \\d+   # followed by one or more digits\n    )?\n    (?:\n      [eE]  # an e character\n      [+-]? # followed by an option +/-\n      \\d+   # followed by one or more digits\n    )?      # make exponent optional\n  )?        # make decimal portion optional",
-			"name": "constant.numeric.json"
+			"name": "constant.numeric.mark"
 		},
-		"object": {
+		"string-content": {
+			"patterns": [
+				{
+					"match": "(?x)                # turn on extended mode\n  \\\\                # a literal backslash\n  (?:               # ...followed by...\n    [\"\\\\/bfnrt]     # one of these characters\n    |               # ...or...\n    u               # a u\n    [0-9a-fA-F]{4}) # and four hex digits",
+					"name": "constant.character.escape.mark"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.unrecognized-string-escape.mark"
+				}
+			]
+		},		
+		"double-string": {
+			"begin": "\"",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.mark"
+				}
+			},
+			"end": "\"",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.mark"
+				}
+			},
+			"name": "string.quoted.double.mark",
+			"patterns": [
+				{
+					"include": "#string-content"
+				}
+			]
+		},
+		"single-string": {
+			"begin": "'",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.begin.mark"
+				}
+			},
+			"end": "'",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.string.end.mark"
+				}
+			},
+			"name": "string.quoted.single.mark",
+			"patterns": [
+				{
+					"include": "#string-content"
+				}
+			]
+		},
+		"string": {
+			"patterns": [
+				{
+					"include": "#double-string"
+				},
+				{
+					"include": "#single-string"
+				}
+			]
+		},
+		"identifier": {
+			"name": "support.type.property-name.mark",
+			"match": "[a-zA-Z$_]([a-zA-Z0-9$_\\-\\.])*"			
+		},
+		"object-key": {
+			"name": "support.type.property-name.mark",
+			"patterns": [
+				{
+					"include": "#identifier"
+				},			
+				{
+					"name": "support.type.property-name.mark",
+					"begin": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.support.type.property-name.begin.mark"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.support.type.property-name.end.mark"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#string-content"
+						}
+					]
+				},
+				{
+					"name": "support.type.property-name.mark",
+					"begin": "'",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.support.type.property-name.begin.mark"
+						}
+					},
+					"end": "'",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.support.type.property-name.end.mark"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#string-content"
+						}
+					]
+				}
+			]
+		},
+		"json-object": {
+			"name": "meta.structure.dictionary.json5",
 			"begin": "\\{",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.definition.dictionary.begin.json"
+					"name": "punctuation.definition.dictionary.begin.json5"
 				}
 			},
 			"end": "\\}",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.definition.dictionary.end.json"
+					"name": "punctuation.definition.dictionary.end.json5"
 				}
 			},
-			"name": "meta.structure.dictionary.json",
 			"patterns": [
 				{
-					"comment": "the JSON object key",
-					"include": "#objectkey"
+					"include": "#object-key"
 				},
 				{
-					"include": "#comments"
+					"include": "#comment"
 				},
 				{
+					"name": "meta.structure.dictionary.value.json5",
 					"begin": ":",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.dictionary.key-value.json"
+							"name": "punctuation.separator.dictionary.key-value.json5"
 						}
 					},
 					"end": "(,)|(?=\\})",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.separator.dictionary.pair.json"
+							"name": "punctuation.separator.dictionary.pair.json5"
 						}
 					},
-					"name": "meta.structure.dictionary.value.json",
 					"patterns": [
 						{
-							"comment": "the JSON object value",
 							"include": "#value"
-						},
-						{
-							"match": "[^\\s,]",
-							"name": "invalid.illegal.expected-dictionary-separator.json"
 						}
 					]
-				},
-				{
-					"match": "[^\\s\\}]",
-					"name": "invalid.illegal.expected-dictionary-separator.json"
 				}
-			]
-		},
-		"string": {
-			"begin": "\"",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.begin.json"
-				}
-			},
-			"end": "\"",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.end.json"
-				}
-			},
-			"name": "string.quoted.double.json",
-			"patterns": [
-				{
-					"include": "#stringcontent"
-				}
-			]
-		},
-		"objectkey": {
-			"begin": "\"",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.support.type.property-name.begin.json"
-				}
-			},
-			"end": "\"",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.support.type.property-name.end.json"
-				}
-			},
-			"name": "string.json support.type.property-name.json",
-			"patterns": [
-				{
-					"include": "#stringcontent"
-				}
-			]
-		},
-		"stringcontent": {
-			"patterns": [
-				{
-					"match": "(?x)                # turn on extended mode\n  \\\\                # a literal backslash\n  (?:               # ...followed by...\n    [\"\\\\/bfnrt]     # one of these characters\n    |               # ...or...\n    u               # a u\n    [0-9a-fA-F]{4}) # and four hex digits",
-					"name": "constant.character.escape.json"
-				},
-				{
-					"match": "\\\\.",
-					"name": "invalid.illegal.unrecognized-string-escape.json"
-				}
-			]
-		},
+			]			
+		},	
 		"value": {
 			"patterns": [
+				{
+					"include": "#comments"
+				},			
 				{
 					"include": "#constant"
 				},
@@ -197,11 +248,8 @@
 					"include": "#array"
 				},
 				{
-					"include": "#object"
-				},
-				{
-					"include": "#comments"
-				}
+					"include": "#json-object"
+				}				
 			]
 		}
 	}

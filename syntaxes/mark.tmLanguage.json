@@ -32,18 +32,8 @@
 				}
 			]
 		},
-		"comments": {
+		"comment": {
 			"patterns": [
-				{
-					"begin": "/\\*\\*(?!/)",
-					"captures": {
-						"0": {
-							"name": "punctuation.definition.comment.mark"
-						}
-					},
-					"end": "\\*/",
-					"name": "comment.block.documentation.mark"
-				},
 				{
 					"begin": "/\\*",
 					"captures": {
@@ -65,6 +55,20 @@
 				}
 			]
 		},
+		"pragma": {
+			"patterns": [
+				{
+					"begin": "\\(",
+					"end": "\\)",
+					"name": "meta.preprocessor.mark",
+					"patterns": [
+						{
+							"include": "#pragma"
+						}						
+					]
+				}
+			]
+		},		
 		"constant": {
 			"match": "\\b(?:true|false|null|NaN|Infinity)\\b",
 			"name": "constant.language.mark"
@@ -233,8 +237,11 @@
 		"value": {
 			"patterns": [
 				{
-					"include": "#comments"
-				},			
+					"include": "#comment"
+				},
+				{
+					"include": "#pragma"
+				},						
 				{
 					"include": "#constant"
 				},

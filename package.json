@@ -1,8 +1,8 @@
 {
     "name": "mark-vsce",
     "displayName": "Mark",
-    "description": "Visual Studio Code extension for Mark Notation",
-    "version": "0.8.1",
+    "description": "Mark Notation support for Visual Studio Code",
+    "version": "0.8.2",
     "publisher": "henryluo",
     "engines": {
         "vscode": "^1.25.0"

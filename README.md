@@ -6,7 +6,7 @@ It provide syntax highlight for Mark Notation.
 
 ## Release Notes
 
-### 0.8.1
+### 0.8.2
 
 Initial release to VSC Marketplace.
 

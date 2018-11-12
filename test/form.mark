@@ -1,7 +1,9 @@
 {template version:'1.0'
-
-	{data-form extend:'FormComponent'
-		{form class:"data-form", id:{this.id}, entity:{this.entity}, module:{this.module}, cols:{this.cols}, onvalidate:{this.onvalidate}
+	(? pragma ?)
+	{data-form extend:FormComponent
+		{form class:data-form, id:{this.id}, entity:{this.entity}, module:{this.module}, 
+			cols:{this.cols}, onvalidate:{this.onvalidate}
+			border:[1 '1px' true false null]
 			//{div class:"buttons-row", style:'position:fixed; top:45px; margin:5px -75px; width:150px; left:50%;'
 			//	{for each:'btn', of:{this.buttons}
 			//		{Button btn:{btn}}
@@ -16,11 +18,12 @@
 				}
 			}
 		}
+		{:binary data }
 	}
 
 	{field-set
 		{if is:(this.en || this.cn)
-			{div class:"block-title"
+			{div class:block-title
 				{Label}
 			}
 		}
@@ -197,6 +200,7 @@
 	}
 
 	{function name:'Label'
+		"Label"
 		{if is:(this.context.setting.lang === 'cn' && this.cn) {this.cn}}
 		{else (this.en || this.label)}
 	}

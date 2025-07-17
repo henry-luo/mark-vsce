@@ -55,26 +55,85 @@
 				}
 			]
 		},
-		"pragma": {
+		"list": {
+			"begin": "\\(",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.list.begin.mark"
+				}
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.list.end.mark"
+				}
+			},
+			"name": "meta.structure.list.mark",
 			"patterns": [
 				{
-					"begin": "\\(",
-					"end": "\\)",
-					"name": "meta.preprocessor.mark",
-					"patterns": [
-						{
-							"include": "#pragma"
-						}						
-					]
+					"include": "#value"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.list.mark"
 				}
 			]
 		},	
 		"binary": {
 			"patterns": [
 				{
-					"begin": "{\\:",
-					"end": "}",
-					"name": "constant.numeric.mark"
+					"begin": "b'\\\\(?:x|64)",
+					"end": "'",
+					"name": "constant.other.binary.mark",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.binary.begin.mark"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.binary.end.mark"
+						}
+					}
+				}
+			]
+		},
+		"datetime": {
+			"patterns": [
+				{
+					"begin": "t'",
+					"end": "'",
+					"name": "constant.other.datetime.mark",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.datetime.begin.mark"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.datetime.end.mark"
+						}
+					}
+				}
+			]
+		},
+		"symbol": {
+			"begin": "'",
+			"end": "'",
+			"name": "constant.other.symbol.mark",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.symbol.begin.mark"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.symbol.end.mark"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#string-content"
 				}
 			]
 		},			
@@ -83,7 +142,7 @@
 			"name": "constant.language.mark"
 		},
 		"number": {
-			"match": "(?x)        # turn on extended mode\n  -?        # an optional minus\n  (?:\n    0       # a zero\n    |       # ...or...\n    [1-9]   # a 1-9 character\n    \\d*     # followed by zero or more digits\n  )\n  (?:\n    (?:\n      \\.    # a period\n      \\d+   # followed by one or more digits\n    )?\n    (?:\n      [eE]  # an e character\n      [+-]? # followed by an option +/-\n      \\d+   # followed by one or more digits\n    )?      # make exponent optional\n  )?        # make decimal portion optional",
+			"match": "(?x)        # turn on extended mode\n  -?        # an optional minus\n  (?:\n    0       # a zero\n    |       # ...or...\n    [1-9]   # a 1-9 character\n    \\d*     # followed by zero or more digits\n  )\n  (?:\n    (?:\n      \\.    # a period\n      \\d+   # followed by one or more digits\n    )?\n    (?:\n      [eE]  # an e character\n      [+-]? # followed by an option +/-\n      \\d+   # followed by one or more digits\n    )?      # make exponent optional\n  )?        # make decimal portion optional\n  (?:n)?    # optional 'n' suffix for BigInt",
 			"name": "constant.numeric.mark"
 		},
 		"string-content": {
@@ -118,33 +177,10 @@
 				}
 			]
 		},
-		"single-string": {
-			"begin": "'",
-			"beginCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.begin.mark"
-				}
-			},
-			"end": "'",
-			"endCaptures": {
-				"0": {
-					"name": "punctuation.definition.string.end.mark"
-				}
-			},
-			"name": "string.quoted.single.mark",
-			"patterns": [
-				{
-					"include": "#string-content"
-				}
-			]
-		},
 		"string": {
 			"patterns": [
 				{
 					"include": "#double-string"
-				},
-				{
-					"include": "#single-string"
 				}
 			]
 		},
@@ -200,6 +236,78 @@
 				}
 			]
 		},
+		"element": {
+			"name": "meta.structure.element.mark",
+			"begin": "<",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.element.begin.mark"
+				}
+			},
+			"end": ">",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.element.end.mark"
+				}
+			},
+			"patterns": [
+				{
+					"comment": "Element name",
+					"match": "\\G[a-zA-Z$_][a-zA-Z0-9$_\\-\\.]*",
+					"name": "entity.name.tag.mark"
+				},
+				{
+					"comment": "Element attributes",
+					"include": "#object-key"
+				},
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": ":",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.dictionary.key-value.mark"
+						}
+					},
+					"end": "(,)|(;)|(?=>)|(?=[a-zA-Z$_])",
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.separator.dictionary.pair.mark"
+						},
+						"2": {
+							"name": "punctuation.separator.element.content.mark"
+						}
+					},
+					"name": "meta.structure.element.value.mark",
+					"patterns": [
+						{
+							"comment": "Element attribute value",
+							"include": "#value"
+						}
+					]
+				},
+				{
+					"comment": "Element content after semicolon",
+					"begin": ";",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.separator.element.content.mark"
+						}
+					},
+					"end": "(?=>)",
+					"patterns": [
+						{
+							"include": "#value"
+						}
+					]
+				},
+				{
+					"comment": "Element content (mixed)",
+					"include": "#value"
+				}
+			]
+		},
 		"object": {
 			"name": "meta.structure.dictionary.mark",
 			"begin": "\\{",
@@ -251,9 +359,6 @@
 					"include": "#comment"
 				},
 				{
-					"include": "#pragma"
-				},						
-				{
 					"include": "#constant"
 				},
 				{
@@ -263,10 +368,22 @@
 					"include": "#binary"
 				},
 				{
+					"include": "#datetime"
+				},
+				{
+					"include": "#symbol"
+				},
+				{
 					"include": "#string"
 				},
 				{
 					"include": "#array"
+				},
+				{
+					"include": "#list"
+				},
+				{
+					"include": "#element"
 				},
 				{
 					"include": "#object"

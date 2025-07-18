@@ -17,7 +17,7 @@
 
 // Arrays and lists
 [array, "items", 123, true, null]
-(list, items, here, 'symbol')
+(list, "items", 123, 'symbol')
 
 // New data types
 t'2023-12-25T10:30:00'       // DateTime
@@ -29,7 +29,6 @@ b'\64SGVsbG8gV29ybGQ='       // Binary base64
 // Symbols and strings
 'symbol_value'
 "string value"
-'another-symbol'
 
 // Numbers including BigInt
 123

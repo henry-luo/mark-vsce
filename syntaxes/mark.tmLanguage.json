@@ -84,7 +84,7 @@
 				{
 					"begin": "b'\\\\(?:x|64)",
 					"end": "'",
-					"name": "constant.other.binary.mark",
+					"name": "string.quoted.binary.mark",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.binary.begin.mark"
@@ -103,7 +103,7 @@
 				{
 					"begin": "t'",
 					"end": "'",
-					"name": "constant.other.datetime.mark",
+					"name": "string.quoted.datetime.mark",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.datetime.begin.mark"
@@ -120,7 +120,7 @@
 		"symbol": {
 			"begin": "'",
 			"end": "'",
-			"name": "constant.other.symbol.mark",
+			"name": "string.quoted.symbol.mark",
 			"beginCaptures": {
 				"0": {
 					"name": "punctuation.definition.symbol.begin.mark"
@@ -138,7 +138,7 @@
 			]
 		},			
 		"constant": {
-			"match": "\\b(?:true|false|null|NaN|Infinity)\\b",
+			"match": "\\b(?:true|false|null|nan|inf)\\b",
 			"name": "constant.language.mark"
 		},
 		"number": {
@@ -308,23 +308,23 @@
 				}
 			]
 		},
-		"object": {
-			"name": "meta.structure.dictionary.mark",
+		"map": {
+			"name": "meta.structure.map.mark",
 			"begin": "\\{",
 			"beginCaptures": {
 				"0": {
-					"name": "punctuation.definition.dictionary.begin.mark"
+					"name": "punctuation.definition.map.begin.mark"
 				}
 			},
 			"end": "\\}",
 			"endCaptures": {
 				"0": {
-					"name": "punctuation.definition.dictionary.end.mark"
+					"name": "punctuation.definition.map.end.mark"
 				}
 			},
 			"patterns": [
 				{
-					"comment": "JSON or Mark object key",
+					"comment": "JSON or Mark map key",
 					"include": "#object-key"
 				},
 				{
@@ -334,19 +334,19 @@
 					"begin": ":",
 					"beginCaptures": {
 						"0": {
-							"name": "punctuation.separator.dictionary.key-value.mark"
+							"name": "punctuation.separator.map.key-value.mark"
 						}
 					},
 					"end": "(,)|(?=\\})|(?=[a-zA-Z$_])",
 					"endCaptures": {
 						"1": {
-							"name": "punctuation.separator.dictionary.pair.mark"
+							"name": "punctuation.separator.map.pair.mark"
 						}
 					},
-					"name": "meta.structure.dictionary.value.mark",
+					"name": "meta.structure.map.value.mark",
 					"patterns": [
 						{
-							"comment": "JSON or Mark object value",
+							"comment": "JSON or Mark map value",
 							"include": "#value"
 						}
 					]
